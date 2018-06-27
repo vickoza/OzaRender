@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRender", "OzaRender\OzaRender.vcxproj", "{120286B4-9065-404D-8B7A-C6996D6944DE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRenderTest", "OzaRenderTest\OzaRenderTest.vcxproj", "{31324F41-184E-4C56-BD1C-55788366703C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x64.Build.0 = Release|x64
 		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x86.ActiveCfg = Release|Win32
 		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x86.Build.0 = Release|Win32
+		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x64.ActiveCfg = Debug|x64
+		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x64.Build.0 = Debug|x64
+		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x86.ActiveCfg = Debug|Win32
+		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x86.Build.0 = Debug|Win32
+		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x64.ActiveCfg = Release|x64
+		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x64.Build.0 = Release|x64
+		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x86.ActiveCfg = Release|Win32
+		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
