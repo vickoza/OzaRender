@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <string>
 #include "CppUnitTest.h"
-#include "../OzaRender/removeTrailingNotUnique.h"
+#include <removeTrailingNotUnique.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

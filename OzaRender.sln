@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.161
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRender", "OzaRender\OzaRender.vcxproj", "{120286B4-9065-404D-8B7A-C6996D6944DE}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRenderTest", "OzaRenderTest\OzaRenderTest.vcxproj", "{31324F41-184E-4C56-BD1C-55788366703C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRenderCore", "OzaRenderCore\OzaRenderCore.vcxitems", "{B5EE297E-7BC6-4D08-A873-9CB9FF515126}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRender", "OzaRender\OzaRender.vcxproj", "{B7320EA8-FC01-4AFF-A719-548600F8026A}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		OzaRenderCore\OzaRenderCore.vcxitems*{31324f41-184e-4c56-bd1c-55788366703c}*SharedItemsImports = 4
+		OzaRenderCore\OzaRenderCore.vcxitems*{b5ee297e-7bc6-4d08-a873-9cb9ff515126}*SharedItemsImports = 9
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -15,14 +21,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Debug|x64.ActiveCfg = Debug|x64
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Debug|x64.Build.0 = Debug|x64
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Debug|x86.ActiveCfg = Debug|Win32
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Debug|x86.Build.0 = Debug|Win32
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x64.ActiveCfg = Release|x64
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x64.Build.0 = Release|x64
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x86.ActiveCfg = Release|Win32
-		{120286B4-9065-404D-8B7A-C6996D6944DE}.Release|x86.Build.0 = Release|Win32
 		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x64.ActiveCfg = Debug|x64
 		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x64.Build.0 = Debug|x64
 		{31324F41-184E-4C56-BD1C-55788366703C}.Debug|x86.ActiveCfg = Debug|Win32
@@ -31,6 +29,14 @@ Global
 		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x64.Build.0 = Release|x64
 		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x86.ActiveCfg = Release|Win32
 		{31324F41-184E-4C56-BD1C-55788366703C}.Release|x86.Build.0 = Release|Win32
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Debug|x64.ActiveCfg = Debug|x64
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Debug|x64.Build.0 = Debug|x64
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Debug|x86.ActiveCfg = Debug|Win32
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Debug|x86.Build.0 = Debug|Win32
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Release|x64.ActiveCfg = Release|x64
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Release|x64.Build.0 = Release|x64
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Release|x86.ActiveCfg = Release|Win32
+		{B7320EA8-FC01-4AFF-A719-548600F8026A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

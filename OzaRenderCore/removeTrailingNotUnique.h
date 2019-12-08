@@ -20,7 +20,7 @@ _FwdIt _Remove_trailing_not_unique(_FwdIt _First, _FwdIt _Last, _Pr _Pred)
 		for (; ++_First != _Last; )
 			if (!_Pred(*_Firstb, *_First))
 				*++_Firstc = _STD move(*_First);
-		return (_Rechecked(++_Firstb, _Remove_trailing_not_unique(_Unchecked(_Firstb), _Unchecked(++_Firstc), _Pred)));
+		return (/*_Rechecked*/(++_Firstb, _Remove_trailing_not_unique(/*_Unchecked*/(_Firstb), /*_Unchecked*/(++_Firstc), _Pred)));
 	}
 	return (_Last);
 }
@@ -28,10 +28,10 @@ _FwdIt _Remove_trailing_not_unique(_FwdIt _First, _FwdIt _Last, _Pr _Pred)
 template<class _FwdIt, class _Pr> inline
 _FwdIt remove_trailing_not_unique(_FwdIt _First, _FwdIt _Last, _Pr _Pred)
 {	// remove 
-	_DEBUG_RANGE(_First, _Last);
+	//_DEBUG_RANGE(_First, _Last);
 	//_DEBUG_POINTER_IF(_First != _Last && _STD next(_First) != _Last, _Pred);
-	return (_Rechecked(_First,
-		_Remove_trailing_not_unique(_Unchecked(_First), _Unchecked(_Last), _Pred)));
+	return (/*_Rechecked*/(_First,
+		_Remove_trailing_not_unique(/*_Unchecked*/(_First),/* _Unchecked*/(_Last), _Pred)));
 }
 
 template<class _FwdIt> inline
