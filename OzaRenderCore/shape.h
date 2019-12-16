@@ -4,6 +4,7 @@
 #include "point.h"
 #include "svector.h"
 #include "renderEngine.h"
+#include "matrix.h"
 #include "Loader.h"
 
 class scene;
@@ -20,11 +21,11 @@ class shape
 	virtual point Center(void) = 0;
 	virtual point Size(void) = 0;
 	virtual void MinMax(point& min, point& max) = 0;
-	virtual void DrawShape(void) = 0;
+	virtual void DrawShape(DrawingObject& dobj) = 0;
 
 	virtual void Draw(void);
-	virtual void ApplyMaterial(void);
-	virtual void ApplyTransforms(void);
+	virtual void ApplyMaterial(DrawingObject& dobj);
+	virtual void ApplyTransforms(DrawingObject& dobj);
 
 	virtual void SetTime(double time) { }
 	virtual bool FindShapeInHierarchy(shape* s, LinkedList<shape*>& sList);

@@ -1,25 +1,18 @@
 #include "vert.h"
+#include "face.h"
+
 void vert::RecalculateNormal(void)
 {
-	face* curFace;
-	int n = 1;
 	normal[0] = 0;
 	normal[1] = 0;
 	normal[2] = 0;
-
-	if (head == nullptr)
+	if (facelist.size() == 0)
 		return;
-	curFace = head->f;
-	current = head;
-	normal += curFace->normal;
-	while (current->next != NULL)
+	for (const auto& f : facelist)
 	{
-		current = current->next;
-		curFace = current->f;
-		normal += curFace->normal;
-		++n;
+		normal += f->normal;
 	}
-	normal /= ((double)n);
+	normal /= ((double)facelist.size());
 	normal.normalize();
 }
 

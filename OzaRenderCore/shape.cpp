@@ -72,8 +72,8 @@ void shape::Draw(void)
 	auto d = renderer->createShapeDraw();
 	PushMatrix();
 
-	ApplyTransforms();
-	ApplyMaterial();
+	ApplyTransforms(d);
+	ApplyMaterial(d);
 
 	if (shade)
 	{
@@ -88,13 +88,13 @@ void shape::Draw(void)
 	}
 
 	PopMatrix();
-	glPopName();
+	/*glPopName();
 	glPopAttrib();
-	glPopMatrix();
+	glPopMatrix();*/
 }
 
 
-void shape::ApplyTransforms(void)
+void shape::ApplyTransforms(DrawingObject& dobj)
 {
 	glTranslated(translation[0], translation[1], translation[2]);
 	glRotated(eulerRot[2], 0.0, 0.0, 1.0);
@@ -104,7 +104,7 @@ void shape::ApplyTransforms(void)
 	glMultMatrixd(transform);
 }
 
-void shape::ApplyMaterial(void)
+void shape::ApplyMaterial(DrawingObject& dobj)
 {
 
 	GLfloat Black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
