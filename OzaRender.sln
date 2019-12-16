@@ -13,6 +13,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		OzaRenderCore\OzaRenderCore.vcxitems*{31324f41-184e-4c56-bd1c-55788366703c}*SharedItemsImports = 4
 		OzaRenderCore\OzaRenderCore.vcxitems*{b5ee297e-7bc6-4d08-a873-9cb9ff515126}*SharedItemsImports = 9
+		OzaRenderCore\OzaRenderCore.vcxitems*{b7320ea8-fc01-4aff-a719-548600f8026a}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
