@@ -5,6 +5,7 @@
 const auto LOADER_INPUT_LENGTH = 1024;
 class Loader
 {
+public:
 	Loader();
 	Loader(char* fName);
 	~Loader();

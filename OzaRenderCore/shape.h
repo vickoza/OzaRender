@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <array>
+#include <stack>
 #include "point.h"
 #include "svector.h"
 #include "renderEngine.h"
@@ -10,6 +11,7 @@
 class scene;
 class shape
 {
+public:
 	shape(std::string newName, std::string newObjName = "");
 	virtual ~shape() { RemoveShape(); }
 
@@ -28,7 +30,7 @@ class shape
 	virtual void ApplyTransforms(DrawingObject& dobj);
 
 	virtual void SetTime(double time) { }
-	virtual bool FindShapeInHierarchy(shape* s, LinkedList<shape*>& sList);
+	//virtual bool FindShapeInHierarchy(shape* s, LinkedList<shape*>& sList); //HACK
 
 	void Translate(double x, double y, double z)
 	{
@@ -44,17 +46,19 @@ class shape
 	static void ClearShapes(void);
 	static void SetCurrentScene(scene* newCur) { curScene = newCur; }
 	static scene* GetCurrentScene(void) { return curScene; }
-	static const matrix& GetCurrentTransform(void) { return matrixStack.Peek(); }
-	static const matrix& GetCurrentNTransform(void) { return itMatrixStack.Peek(); }
+	static const matrix& GetCurrentTransform(void) { return matrixStack.top(); }
+	static const matrix& GetCurrentNTransform(void) { return itMatrixStack.top(); }
 
 	// These constants are important for managing shapes
 	// 9973 is the largest prime number < 10000
 	// Must use a prime to make hashing efficient
 	enum { MAX_OBJECTS = 9973, MAX_MESSAGE_LENGTH = 1024 };
 
+	static renderEngine* renderer;
+
 protected:
 
-	void SetShapeName(const char* newName) { strcpy(shapeName, newName); }
+	void SetShapeName(std::string newName) { shapeName = newName; }
 	void RemoveShape(void);
 
 	virtual bool ReadSegment(Loader& input, char* token);
@@ -94,16 +98,14 @@ protected:
 	bool		alphaDataSet;
 	bool		alphaTransparency;
 	bool		transparencySet;
-
-	static renderEngine* renderer;
-	/*shader* shade;
+	shaderType shade;
 
 	// Static data for keeping track of rendering
-	static Stack<matrix> matrixStack;   // Model Matrix Stack
-	static Stack<matrix> itMatrixStack; // InverseTranspose Stack for normal transforms
+	static std::stack<matrix> matrixStack;   // Model Matrix Stack
+	static std::stack<matrix> itMatrixStack; // InverseTranspose Stack for normal transforms
 
-	/*static gouraudShader		defaultShader;
-	static Stack<shader*>		curShader;*/
+	static shaderType		defaultShader;
+	static std::stack<shaderType>		curShader;
 	static bool					stacksInitialized;
 
 	static scene* curScene;	// Current scene for reflection mapping

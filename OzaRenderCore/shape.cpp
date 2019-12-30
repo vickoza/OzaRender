@@ -1,31 +1,36 @@
+#include <algorithm>
 #include "shape.h"
+
 
 shape* shape::objectList[MAX_OBJECTS];
 
-Stack<matrix> shape::matrixStack;   // Model Matrix Stack
-Stack<matrix> shape::itMatrixStack; // InverseTranspose Stack for normal transforms
-gouraudShader shape::defaultShader;
-Stack<shader*> shape::curShader;
+std::stack<matrix> shape::matrixStack;   // Model Matrix Stack
+std::stack<matrix> shape::itMatrixStack; // InverseTranspose Stack for normal transforms
+shaderType shape::defaultShader = shaderType::gouraudShader;
+std::stack<shaderType> shape::curShader;
 bool shape::stacksInitialized = false;
 
 scene* shape::curScene;
 
-shape::shape(const char* newName, const char* newObjName)
+shape::shape(std::string newName, std::string newObjName)
 {
 	if (!stacksInitialized)
 	{
-		curShader.Clear();
-		curShader.Push(&defaultShader);
+		while (!curShader.empty())
+		{
+			curShader.pop();
+		}
+		curShader.push(defaultShader);
 		stacksInitialized = true;
 		matrix identity(4, 4, 1.0);
-		matrixStack.Push(identity);
-		itMatrixStack.Push(identity);
+		matrixStack.push(identity);
+		itMatrixStack.push(identity);
 	}
 
 	SetShapeName(newName);
 	SetObjectName(newObjName);
 
-	shade = NULL;
+	shade = shaderType::none;
 	InitializeAttributes();
 	dynamic = false;
 }
@@ -43,25 +48,21 @@ void shape::InitializeAttributes(void)
 	alphaDataSet = false;
 	transparencySet = false;
 
-	if (!shade)
-	{
-		delete shade; // we assume that all shaders are created dynamically!!!!
-		shade = NULL;
-	}
+	shade = shaderType::none;
 
 	ambient[0] = diffuse[0] = specular[0] = shininess = -1;
 }
 
 void shape::PushMatrix()
 {
-	itMatrixStack.Push(this->GetCurrentNTransform());
-	matrixStack.Push(this->GetCurrentNTransform());
+	itMatrixStack.push(this->GetCurrentNTransform());
+	matrixStack.push(this->GetCurrentNTransform());
 }
 
 void shape::PopMatrix(void)
 {
-	matrixStack.Pop();
-	itMatrixStack.Pop();
+	matrixStack.pop();
+	itMatrixStack.pop();
 }
 
 void shape::Draw(void)
@@ -72,19 +73,19 @@ void shape::Draw(void)
 	auto d = renderer->createShapeDraw();
 	PushMatrix();
 
-	ApplyTransforms(d);
-	ApplyMaterial(d);
+	ApplyTransforms(*d);
+	ApplyMaterial(*d);
 
-	if (shade)
+	if (shade != shaderType::none)
 	{
-		curShader.Push(shade);
-		shade->BeginShading();
+		curShader.push(shade);
+		shaderMap[shade]->BeginShading();
 	}
-	DrawShape();
-	if (shade)
+	DrawShape(*d);
+	if (shade != shaderType::none)
 	{
-		shade->EndShading();
-		curShader.Pop();
+		shaderMap[shade]->EndShading();
+		curShader.pop();
 	}
 
 	PopMatrix();
@@ -96,18 +97,19 @@ void shape::Draw(void)
 
 void shape::ApplyTransforms(DrawingObject& dobj)
 {
-	glTranslated(translation[0], translation[1], translation[2]);
+	dobj.ApplyTransforms(eulerRot, translation, scale);
+	/*glTranslated(translation[0], translation[1], translation[2]);
 	glRotated(eulerRot[2], 0.0, 0.0, 1.0);
 	glRotated(eulerRot[1], 0.0, 1.0, 0.0);
 	glRotated(eulerRot[0], 1.0, 0.0, 0.0);
 	glScaled(scale[0], scale[1], scale[2]);
-	glMultMatrixd(transform);
+	glMultMatrixd(transform);*/
 }
 
 void shape::ApplyMaterial(DrawingObject& dobj)
 {
-
-	GLfloat Black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	dobj.ApplyMaterial(ambient, ambientSet, diffuse, diffuseSet, specular, specularSet, shininess, shininessSet);
+	/*GLfloat Black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	GLfloat White[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	if (diffuseSet)
@@ -135,10 +137,10 @@ void shape::ApplyMaterial(DrawingObject& dobj)
 				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, White);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shininess);
 		}
-	}
+	}*/
 
 }
-
+/* //HACK
 bool shape::FindShapeInHierarchy(shape* s, LinkedList<shape*>& sList)
 {
 	if (s == this)
@@ -149,7 +151,7 @@ bool shape::FindShapeInHierarchy(shape* s, LinkedList<shape*>& sList)
 	else
 		return false;
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////
 // The following functions manage the internal hash table of loaded shapes
 // They allow for searching for shapes by name, which will retrieve a pointer
@@ -165,7 +167,7 @@ bool shape::FindShapeInHierarchy(shape* s, LinkedList<shape*>& sList)
 int shape::HashFunction(const char* name)
 {
 	int i = 0;
-	uint count = 0;
+	unsigned int count = 0;
 
 	while (name[i] != '\0')
 		count = count + name[i++];
@@ -192,17 +194,15 @@ void shape::RemoveShape(void)
 
 shape* shape::FindShape(const char* objName)
 {
-	char tmpName[MAX_INPUT_LENGTH];
+	std::string tmpName = objName;
 
-	strcpy(tmpName, objName);
-
-	LCase(tmpName);
-	int index, startIndex = HashFunction(tmpName);
+	std::transform(tmpName.begin(), tmpName.end(), tmpName.begin(), std::tolower);
+	int index, startIndex = HashFunction(tmpName.c_str());
 
 	index = startIndex;
 	while (objectList[index] != NULL)
 	{
-		if (strcmp(tmpName, objectList[index]->objectName) == 0)
+		if (tmpName == objectList[index]->objectName)
 			return objectList[index];
 		index++;
 		if (index >= MAX_OBJECTS)
@@ -222,7 +222,7 @@ std::string shape::SetObjectName(std::string newObjName)
 	else
 		Name = newObjName;
 
-	int index, startIndex = HashFunction(Name);
+	int index, startIndex = HashFunction(Name.c_str());
 	index = startIndex;
 
 	while (objectList[index] != NULL)
@@ -230,20 +230,20 @@ std::string shape::SetObjectName(std::string newObjName)
 		index++;
 		if (index >= MAX_OBJECTS)
 			index = 0;
-		if (index == startIndex)
-			complain("Object List Full:  Too many shapes!");
+		/*if (index == startIndex)
+			complain("Object List Full:  Too many shapes!");*/
 	}
 
 	RemoveShape();
 
-	strcpy(objectName, Name);
+	objectName == Name;
 	objectList[index] = this;
 	return objectName;
 }
 
 int shape::ShapeIndex(void)
 {
-	int startIndex = HashFunction(objectName);
+	int startIndex = HashFunction(objectName.c_str());
 	int index = startIndex;
 
 	while (objectList[index] != this)

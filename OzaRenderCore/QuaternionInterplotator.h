@@ -63,7 +63,7 @@ protected:
 		// the bubble sort to go faster, then since we will often
 		// be inserting on the end, reverse the bubble sort so 
 		// that it goes from the end up to the front of the array.
-		std::sort(keys.begin(), keys.end(), [](const auto& a, const auto& b) {return a.t < b.t; })
+		std::sort(keys.begin(), keys.end(), [](const auto& a, const auto& b) {return a.t < b.t; });
 	}
 
 
@@ -109,7 +109,7 @@ QuaternionInterplotator* QuaternionInterplotator::LoadQuaternionInterpolator(Loa
 void QuaternionInterplotator::Load(Loader& input)
 {
 	char token[256], tmp[256];
-
+	int nKeys;
 	if (!input.ReadInt(nKeys))
 		input.Error("Interpolator object must begin with a key count");
 
@@ -143,7 +143,7 @@ void QuaternionInterplotator::Load(Loader& input)
 				else if (strncmp(tmp, "angleaxis", 9) == 0)
 				{
 					double angle;
-					vector v;
+					svector v;
 
 					if (!input.ReadDouble(angle))
 						input.Error("An angle-axis value for a quaternionernion key must begin with an angle\n");
@@ -155,7 +155,7 @@ void QuaternionInterplotator::Load(Loader& input)
 				}
 				else if (strncmp(tmp, "euler", 5) == 0)
 				{
-					vector v;
+					svector v;
 
 					for (int j = 0; j < 3; j++)
 					{
@@ -169,7 +169,7 @@ void QuaternionInterplotator::Load(Loader& input)
 			}
 		} while (strcmp(token, "key") != 0 && strcmp(token, "end") != 0);
 
-		if (strcmp(token, "end") == 0 && i != nKeys - 1)
+		if (strcmp(token, "end") == 0 && i != keys.size() - 1)
 			input.Error("End reached before all keys were found");
 	}
 }
@@ -190,13 +190,13 @@ quaternion bezierQuaternion::Evaluate(double t)
 {
 	if (t < keys[0].t)
 		return keys[0].q;
-	else if (t > keys[nKeys - 1].t)
-		return keys[nKeys - 1].q;
+	else if (t > keys.back().t)
+		return keys.back().q;
 	int i = FindInterval(t);
 	double p = (t - keys[i].t) / (keys[i + 1].t - keys[i].t);
-	if (nKeys == 2)
+	if (keys.size() == 2)
 		return slerpM(keys[0].q, keys[1].q, p);
-	if (nKeys == 3)
+	if (keys.size() == 3)
 	{
 		quaternion a = getQuaternion(keys[0].q, keys[1].q, keys[2].q);
 		return squad(keys[i].q, keys[i + 1].q, a, a, p);
@@ -207,10 +207,10 @@ quaternion bezierQuaternion::Evaluate(double t)
 		quaternion b = getQuaternion(keys[0].q, keys[1].q, keys[2].q);
 		return squad(keys[i].q, keys[i + 1].q, a, b, p);
 	}
-	if (i == (nKeys - 2))
+	if (i == (keys.size() - 2))
 	{
-		quaternion a = getQuaternion(keys[nKeys - 3].q, keys[nKeys - 2].q, keys[nKeys - 1].q);
-		quaternion b = getQuaternion(keys[nKeys - 2].q, keys[nKeys - 1].q, keys[nKeys - 1].q);
+		quaternion a = getQuaternion(keys[keys.size() - 3].q, keys[keys.size() - 2].q, keys.back().q);
+		quaternion b = getQuaternion(keys[keys.size() - 2].q, keys.back().q, keys.back().q);
 		return squad(keys[i].q, keys[i + 1].q, a, b, p);
 	}
 	quaternion a = getQuaternion(keys[i - 1].q, keys[i].q, keys[i + 1].q);
@@ -238,8 +238,8 @@ quaternion slerp::Evaluate(double t)
 	// Be careful of division by 0 in the slerp formula!
 	if (t < keys[0].t)
 		return keys[0].q;
-	else if (t > keys[nKeys - 1].t)
-		return keys[nKeys - 1].q;
+	else if (t > keys.back().t)
+		return keys.back().q;
 	int i = FindInterval(t);
 	double p = (t - keys[i].t) / (keys[i + 1].t - keys[i].t);
 

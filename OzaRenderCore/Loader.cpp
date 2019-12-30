@@ -1,6 +1,11 @@
 #include <cstdarg>
 #include <cstdlib>
+#include <io.h>
 #include "Loader.h"
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif // !_CRT_SECURE_NO_WARNINGS
+
 Loader::Loader(): f(nullptr)
 {
 }
@@ -32,7 +37,7 @@ bool Loader::Open(char* fName)
 	if (!f)
 		return false;
 
-	_fullpath(fileFullPath.data(), fileName.c_str(), _MAX_PATH);
+	_fullpath((char*)fileFullPath.data(), fileName.c_str(), _MAX_PATH);
 	fileLength = _filelength(_fileno(f));
 
 	curLine = 0;
