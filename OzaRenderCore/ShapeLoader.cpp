@@ -4,24 +4,20 @@
 #include "sphere.h"
 #include "animatedShape.h"
 #include "Loader.h"
-
+#include "Misc.h"
 
 bool shape::ReadSegment(Loader& input, char* token)
 {
 	if (!strncmp(token, "col", 3))
 	{
-		int i;
-		for (i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 			if (!input.ReadFloat(ambient[i]))
 				input.Error("Incomplete Color Data");
 
-		if (!input.ReadFloat(ambient[i]))
+		if (!input.ReadFloat(ambient[3]))
 			ambient[3] = 1.0;
 
-		diffuse[0] = ambient[0];
-		diffuse[1] = ambient[1];
-		diffuse[2] = ambient[2];
-		diffuse[3] = ambient[3];
+		diffuse = ambient;
 
 		ambientSet = diffuseSet = true;
 

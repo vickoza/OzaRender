@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "shape.h"
 
-
+std::unordered_map<shaderType, std::unique_ptr<shader>> shaderMap;
 shape* shape::objectList[MAX_OBJECTS];
 
 std::stack<matrix> shape::matrixStack;   // Model Matrix Stack
@@ -9,7 +9,7 @@ std::stack<matrix> shape::itMatrixStack; // InverseTranspose Stack for normal tr
 shaderType shape::defaultShader = shaderType::gouraudShader;
 std::stack<shaderType> shape::curShader;
 bool shape::stacksInitialized = false;
-
+renderEngine* shape::renderer = nullptr;
 scene* shape::curScene;
 
 shape::shape(std::string newName, std::string newObjName)

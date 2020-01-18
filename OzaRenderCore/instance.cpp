@@ -1,4 +1,5 @@
 #include "instance.h"
+#include "Misc.h"
 instance::instance(const char* masterName) : shape("instance")
 {
 	master = nullptr;

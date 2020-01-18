@@ -26,7 +26,7 @@ public:
 
 	int NVertices(void);
 	int NFaces(void);
-	int NInstances(void);
+	//int NInstances(void);
 
 	void RecalculateNormals(void);
 	void DrawShape(DrawingObject& dobj) override;
@@ -46,7 +46,7 @@ protected:
 	vert* AddVertex(const double* Coord);
 	void AddFace(face* f);
 	void AddFace(face& source);
-	void CopyFace(face* f);
+	//void CopyFace(face* f);//HACK
 	void ResizeFaceList(void);
 
 	void ReadNew(Loader& input);

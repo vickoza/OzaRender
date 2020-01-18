@@ -69,10 +69,10 @@ protected:
 	virtual void PushMatrix(void);
 	virtual void PopMatrix(void);
 
-	void PlanarMap(double x, double y, double z, double& u, double& v);
+	/*void PlanarMap(double x, double y, double z, double& u, double& v);
 	void CylindricalMap(double x, double y, double z, double& u, double& v);
 	void SphericalMap(double x, double y, double z, double& u, double& v);
-	void BoxMap(double x, double y, double z, double& u, double& v);
+	void BoxMap(double x, double y, double z, double& u, double& v);*/
 
 	std::string shapeName;
 	std::string objectName;
@@ -80,16 +80,16 @@ protected:
 	bool dynamic;
 
 	int			glListNumber;
-	std::array<double, 3> eulerRot;
+	std::array<double, 4> eulerRot;
 	matrix		transform; // Transformation Matrix
-	std::array<double, 3> translation;
-	std::array<double, 3>	scale;
+	std::array<double, 4> translation;
+	std::array<double, 4>	scale;
 
-	std::array<float, 3> ambient;
+	std::array<float, 4> ambient;
 	bool		ambientSet;
-	std::array<float, 3> diffuse;
+	std::array<float, 4> diffuse;
 	bool		diffuseSet;
-	std::array<float,3> specular;
+	std::array<float,4> specular;
 	bool		specularSet;
 	float		shininess;
 	bool		shininessSet;

@@ -1,6 +1,8 @@
 #include <ctype.h>
 #include "component.h"
+#include "Misc.h"
 using namespace std;
+
 component::component(std::string name) : shape("component")
 {
 	SetObjectName(name);
