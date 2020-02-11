@@ -1,10 +1,8 @@
+#include <iostream>
 #include <cstdarg>
 #include <cstdlib>
 #include <io.h>
 #include "Loader.h"
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif // !_CRT_SECURE_NO_WARNINGS
 
 Loader::Loader(): f(nullptr)
 {
@@ -364,7 +362,7 @@ bool Loader::ReadCurrentLine(int& curPosInLine, char* buffer, int size)
 
 //#include "Windows.h"
 
-void Loader::Error(char* token, char* message, ...)
+void Loader::Error(const char* token, const char* message, ...)
 {
 	char curLineContents[LOADER_INPUT_LENGTH];
 	char s[LOADER_INPUT_LENGTH];
@@ -376,7 +374,8 @@ void Loader::Error(char* token, char* message, ...)
 
 	int curPosInLine;
 	ReadCurrentLine(curPosInLine, curLineContents);
-	printf("Error:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
+	std::cout << "Error:\t" << s << "\n    File: \t" << fileName << "\n    Line: \t" << curLine << "\n    " << curLineContents << '\n';
+	//printf("Error:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
 
 	char* found = strstr(curLineContents, token);
 	int tokenPos;
@@ -389,13 +388,13 @@ void Loader::Error(char* token, char* message, ...)
 		printf(" ");
 	printf("^\n");
 
-	char tmp[1024];
-	sprintf(tmp, "Error in %s(%d):\n%s\nFor more info, see the console window", fileName, curLine, s);
+	//char tmp[1024];
+	//sprintf(tmp, "Error in %s(%d):\n%s\nFor more info, see the console window", fileName, curLine, s);
 	//MessageBox(NULL, tmp, "Error", MB_OK);
 	exit(1);
 }
 
-void Loader::Error(char* message, ...)
+void Loader::Error(const char* message, ...)
 {
 	char curLineContents[LOADER_INPUT_LENGTH];
 	char s[LOADER_INPUT_LENGTH];
@@ -407,18 +406,19 @@ void Loader::Error(char* message, ...)
 
 	int curPosInLine;
 	ReadCurrentLine(curPosInLine, curLineContents);
-	printf("Error:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
+	std::cout << "Error:\t" << s <<"\n    File: \t" <<fileName <<"\n    Line: \t" << curLine << "\n    " << curLineContents << '\n';
+	//printf("Error:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
 	for (int i = 0; i < curPosInLine; i++)
 		printf(" ");
 	printf("^\n");
 
-	char tmp[1024];
-	sprintf(tmp, "Error in %s(%d):\n%s\nFor more info, see the console window", fileName, curLine, s);
+	//char tmp[1024];
+	//sprintf(tmp, "Error in %s(%d):\n%s\nFor more info, see the console window", fileName, curLine, s);
 	//MessageBox(NULL, tmp, "Error", MB_OK);
 	exit(1);
 }
 
-void Loader::Warning(char* token, char* message, ...)
+void Loader::Warning(const char* token, const char* message, ...)
 {
 	char curLineContents[LOADER_INPUT_LENGTH];
 	char s[LOADER_INPUT_LENGTH];
@@ -430,7 +430,8 @@ void Loader::Warning(char* token, char* message, ...)
 
 	int curPosInLine;
 	ReadCurrentLine(curPosInLine, curLineContents);
-	printf("Warning:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
+	std::cout << "Warning:\t" << s << "\n    File: \t" << fileName << "\n    Line: \t" << curLine << "\n    " << curLineContents << '\n';
+	//printf("Warning:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
 
 	char* found = strstr(curLineContents, token);
 	int tokenPos;
@@ -445,7 +446,7 @@ void Loader::Warning(char* token, char* message, ...)
 
 }
 
-void Loader::Warning(char* message, ...)
+void Loader::Warning(const char* message, ...)
 {
 	char curLineContents[LOADER_INPUT_LENGTH];
 	char s[LOADER_INPUT_LENGTH];
@@ -457,7 +458,8 @@ void Loader::Warning(char* message, ...)
 
 	int curPosInLine;
 	ReadCurrentLine(curPosInLine, curLineContents);
-	printf("Warning:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
+	std::cout << "Warning:\t" << s << "\n    File: \t" << fileName << "\n    Line: \t" << curLine << "\n    " << curLineContents << '\n';
+	//printf("Warning:\t%s\n    File: \t%s\n    Line: \t%d\n    %s\n    ", s, fileName, curLine, curLineContents);
 	for (int i = 0; i < curPosInLine; i++)
 		printf(" ");
 	printf("^\n");

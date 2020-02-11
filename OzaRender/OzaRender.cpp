@@ -36,12 +36,15 @@ BEGIN_MESSAGE_MAP(COzaRenderApp, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+	ON_COMMAND(ID_VULKAN, &COzaRenderApp::OnVulkan)
+	ON_COMMAND(ID_DIRECTX, &COzaRenderApp::OnDirectX)
+	ON_COMMAND(ID_OPENGL, &COzaRenderApp::OnOpenGL)
 END_MESSAGE_MAP()
 
 
 // COzaRenderApp construction
 
-COzaRenderApp::COzaRenderApp() noexcept
+COzaRenderApp::COzaRenderApp() noexcept : currentRenderPackage(COzaRenderApp::RenderPackage::Vulkan)
 {
 	// support Restart Manager
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
@@ -80,6 +83,7 @@ BOOL COzaRenderApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinAppEx::InitInstance();
+	loadVulkan();
 
 
 	// Initialize OLE libraries
@@ -218,5 +222,71 @@ void COzaRenderApp::SaveCustomState()
 
 // COzaRenderApp message handlers
 
+
+void COzaRenderApp::OnVulkan()
+{
+	// TODO: Add your command handler code here
+	if (currentRenderPackage != RenderPackage::Vulkan)
+	{
+		CMFCRibbonBar* pRibbon = ((CMDIFrameWndEx*)AfxGetMainWnd())->GetRibbonBar();
+		ASSERT_VALID(pRibbon);
+		loadVulkan();
+		auto pVulkan = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_VULKAN));
+		auto pDirectX = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_DIRECTX));
+		auto pOpenGL = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_OPENGL));
+		pVulkan->SetCheck(true);
+		pDirectX->SetCheck(false);
+		pOpenGL->SetCheck(false);
+		currentRenderPackage = RenderPackage::Vulkan;
+	}
+}
+
+void COzaRenderApp::OnDirectX()
+{
+	// TODO: Add your command handler code here
+	if (currentRenderPackage != RenderPackage::DirectX)
+	{
+		CMFCRibbonBar* pRibbon = ((CMDIFrameWndEx*)AfxGetMainWnd())->GetRibbonBar();
+		ASSERT_VALID(pRibbon);
+		loadDirectX();
+		auto pVulkan = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_VULKAN));
+		auto pDirectX = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_DIRECTX));
+		auto pOpenGL = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_OPENGL));
+		pVulkan->SetCheck(false);
+		pDirectX->SetCheck(true);
+		pOpenGL->SetCheck(false);
+		currentRenderPackage = RenderPackage::DirectX;
+	}
+}
+
+void COzaRenderApp::OnOpenGL()
+{
+	// TODO: Add your command handler code here
+	if (currentRenderPackage != RenderPackage::OpenGLPlus)
+	{
+		CMFCRibbonBar* pRibbon = ((CMDIFrameWndEx*)AfxGetMainWnd())->GetRibbonBar();
+		ASSERT_VALID(pRibbon);
+		loadOpenGLPlus();
+		auto pVulkan = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_VULKAN));
+		auto pDirectX = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_DIRECTX));
+		auto pOpenGL = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_OPENGL));
+		pVulkan->SetCheck(false);
+		pDirectX->SetCheck(false);
+		pOpenGL->SetCheck(true);
+		currentRenderPackage = RenderPackage::OpenGLPlus;
+	}
+}
+
+void COzaRenderApp::loadVulkan()
+{
+}
+
+void COzaRenderApp::loadDirectX()
+{
+}
+
+void COzaRenderApp::loadOpenGLPlus()
+{
+}
 
 

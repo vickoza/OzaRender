@@ -44,10 +44,10 @@ public:
 	void EatReturns(void);
 	void EatNumbers(void);  // Ignore a series of numbers following a command
 
-	void Error(char* token, char* message, ...);
-	void Error(char* message, ...);
-	void Warning(char* token, char* message, ...);
-	void Warning(char* message, ...);
+	void Error(const char* token, const char* message, ...);
+	void Error(const char* message, ...);
+	void Warning(const char* token, const char* message, ...);
+	void Warning(const char* message, ...);
 
 private:
 

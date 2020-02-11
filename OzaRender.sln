@@ -8,6 +8,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRenderCore", "OzaRenderCore\OzaRenderCore.vcxitems", "{B5EE297E-7BC6-4D08-A873-9CB9FF515126}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzaRender", "OzaRender\OzaRender.vcxproj", "{B7320EA8-FC01-4AFF-A719-548600F8026A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A70FFA14-D4B3-465B-A6CC-29903D7C42DA} = {A70FFA14-D4B3-465B-A6CC-29903D7C42DA}
+		{2CADD938-3EBA-4BB8-B73E-02DA1C6FACAE} = {2CADD938-3EBA-4BB8-B73E-02DA1C6FACAE}
+		{CFC98B97-9A87-4622-A487-D10D47EA3C91} = {CFC98B97-9A87-4622-A487-D10D47EA3C91}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanRenderer", "VulkanRenderer\VulkanRenderer.vcxproj", "{2CADD938-3EBA-4BB8-B73E-02DA1C6FACAE}"
 EndProject
@@ -15,15 +20,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectX", "DirectX\DirectX.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL", "OpenGL\OpenGL.vcxproj", "{CFC98B97-9A87-4622-A487-D10D47EA3C91}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderInterface", "RenderInterface\RenderInterface.vcxitems", "{CBF70C01-0CFC-49CA-8DEF-9DD6E7E9E70A}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		OzaRenderCore\OzaRenderCore.vcxitems*{2cadd938-3eba-4bb8-b73e-02da1c6facae}*SharedItemsImports = 4
 		OzaRenderCore\OzaRenderCore.vcxitems*{31324f41-184e-4c56-bd1c-55788366703c}*SharedItemsImports = 4
 		OzaRenderCore\OzaRenderCore.vcxitems*{a70ffa14-d4b3-465b-a6cc-29903d7c42da}*SharedItemsImports = 4
 		OzaRenderCore\OzaRenderCore.vcxitems*{b5ee297e-7bc6-4d08-a873-9cb9ff515126}*SharedItemsImports = 9
 		OzaRenderCore\OzaRenderCore.vcxitems*{b7320ea8-fc01-4aff-a719-548600f8026a}*SharedItemsImports = 4
-		RenderInterface\RenderInterface.vcxitems*{cbf70c01-0cfc-49ca-8def-9dd6e7e9e70a}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
