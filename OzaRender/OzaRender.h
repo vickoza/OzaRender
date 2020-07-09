@@ -24,6 +24,18 @@
 // See OzaRender.cpp for the implementation of this class
 //
 
+class MyRibbonCheckBox : public CMFCRibbonCheckBox
+{
+public:
+	   BOOL SetCheck(BOOL checked)
+	   {
+		   // access protected member of baseclass CMFCRibbonBaseElement 
+		   BOOL prevchecked = m_bIsChecked;
+		   m_bIsChecked = checked;
+		   return prevchecked;
+	}
+};
+
 class COzaRenderApp : public CWinAppEx
 {
 public:
@@ -42,6 +54,17 @@ public:
 
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnVulkan();
+	afx_msg void OnDirectX();
+	afx_msg void OnOpenGL();
+
+private:
+	enum class RenderPackage { Vulkan, DirectX, OpenGLPlus };
+	RenderPackage currentRenderPackage;
+	HINSTANCE hinstRenderLib;
+	void loadVulkan();
+	void loadDirectX();
+	void loadOpenGLPlus(); //refer to OpenGL 2.0 or later should use openGL 4.0
 };
 
 extern COzaRenderApp theApp;

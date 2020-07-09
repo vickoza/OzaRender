@@ -1,5 +1,6 @@
 #include <iostream>
 #include "animatedShape.h"
+#include "QuaternionInterplotator.h"
 
 animatedShape::animatedShape() : shape("animatedshape"), iPosition(nullptr),  iScale(nullptr), iRotation(nullptr), iRotationQ(nullptr), time(0.0)
 {
@@ -75,4 +76,79 @@ void animatedShape::ApplyTransforms(DrawingObject& dobj)
 void animatedShape::DrawShape(DrawingObject& dobj)
 {
 	s->DrawShape(dobj);
+}
+
+void animatedShape::Read(Loader& input)
+{
+	char token[256], name[256];
+
+	s = NULL;
+	do
+	{
+		input.PeekTokens(token, 1);
+
+		if (strcmp(token, "object") == 0)
+		{
+			input.ReadToken(token);
+
+			if (s != NULL)
+				input.Error("Only one shape allowed in an AnimatedShape object");
+
+			input.ReadToken(name);
+			s = FindShape(name);
+			if (s == NULL)
+				input.Error("Couldn't find shape '%s' referenced in AnimatedShape '%s'", name, objectName);
+		}
+		else if (strncmp(token, "pos", 3) == 0)
+		{
+			input.ReadToken(token);
+			iPosition = Interpolator::LoadInterpolator(input);
+			if (iPosition->NKeys() == 0)
+			{
+				delete iPosition;
+				iPosition = NULL;
+			}
+		}
+		else if (strncmp(token, "sc", 2) == 0)
+		{
+			input.ReadToken(token);
+			iScale = Interpolator::LoadInterpolator(input);
+			if (iScale->NKeys() == 0)
+			{
+				delete iScale;
+				iScale = NULL;
+			}
+		}
+		else if (strncmp(token, "rot", 3) == 0)
+		{
+			input.ReadToken(token);
+			iRotation = Interpolator::LoadInterpolator(input);
+			if (iRotation->NKeys() == 0)
+			{
+				delete iRotation;
+				iRotation = NULL;
+			}
+		}
+		else if (strncmp(token, "quatinterpolator", 16) == 0)
+		{
+			input.ReadToken(token);
+			iRotationQ = QuaternionInterplotator::LoadQuaternionInterpolator(input);
+			if (iRotationQ->NKeys() == 0)
+			{
+				delete iRotationQ;
+				iRotationQ = NULL;
+			}
+		}
+		else if (strncmp(token, "mat", 3) == 0)
+		{
+			input.ReadToken(token);
+			iMatrix = new matrixRotationInterp;
+
+			iMatrix->Load(input);
+		}
+		else if (strcmp(token, "end") == 0)
+			break;
+		else
+			input.Error(token, "Unknown command '%s' in AnimatedShape '%s'", token, objectName);
+	} while (true);
 }

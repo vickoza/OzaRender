@@ -4,7 +4,7 @@
 class sphere : public shape
 {
 public:
-	sphere(point c = point(0, 0, 0), double r = 1.0, int res = 10, char* name = "sphere") : shape("sphere", name)
+	sphere(point c = point(0, 0, 0), double r = 1.0, int res = 10, const char* name = "sphere") : shape("sphere", name)
 	{
 		/*glListNumber = 0;*/ SetSphere(c, r, res);
 	}

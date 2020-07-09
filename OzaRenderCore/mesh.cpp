@@ -1,6 +1,5 @@
 #include "mesh.h"
-const double TD_SMALL = 1e-6;
-
+#include "Misc.h"
 mesh::mesh(std::string name) : shape("mesh")
 {
 	SetObjectName(name);
@@ -66,8 +65,8 @@ void mesh::AddFace(face& source)
 	ResizeFaceList();
 
 	vert* v;
-	faces.emplace_back(source.nVerts);
-	for (int i = 0; i < source.nVerts; i++)
+	faces.emplace_back(source);
+	for (int i = 0; i < source.vertices.size(); i++)
 	{
 		v = AddVertex(source.vertices[i]->position.c.data());
 		faces.back().vertices[i] = v;
@@ -277,3 +276,220 @@ int mesh::NFaces(void)
 {
 	return vertices.size();
 }
+
+static const int MAX_OLD_MESH_SIZE = 20000;
+
+void mesh::Read(Loader& input)
+{
+	char token[MAX_INPUT_LENGTH];
+	int nmeshs;
+
+	if (!input.ReadInt(nmeshs))
+		ReadNew(input);
+	else
+	{
+		Erase(MAX_OLD_MESH_SIZE, nmeshs);		// We have currently hardwired in a limit of MAX_OLD_MESH_SIZE vertices
+												// for the old format.  Any larger mesh must be in the "new" format
+		for (int i = 0; i < nmeshs; i++)
+		{
+			input.ReadToken(token);
+			if (strcmp(token, "face") == 0)
+				ReadFace(input);
+			else
+				input.Error("Insufficient number of faces or objects for mesh: %s\nEncountered '%s' before all faces were complete", objectName, token);
+		}
+		for (auto& vertex : vertices)
+			vertex.uv = vertex.position - point::origin;
+	}
+
+	do
+	{
+		input.PeekTokens(token, 1);
+		if (strcmp(token, "breakangle") == 0)
+		{
+			input.ReadToken(token); // Read the "breakangle" token
+			if (!input.ReadDouble(breakAngle))
+				input.Error("Incomplete 'breakangle' command for mesh %s.  Expected a number.", objectName);
+		}
+		else if (strcmp(token, "end") != 0)
+			input.Error("Unknown option for mesh %s", objectName);
+	} while (strcmp(token, "end") != 0);
+
+	RecalculateNormals();
+}
+
+void mesh::ReadFace(Loader& input)
+{
+	int n;
+	vert* v;
+	double coord[3];
+
+	if (!input.ReadInt(n))
+		input.Error("Syntax error in face command.  # Vertices not found.");
+
+	ResizeFaceList();
+	faces.back().SetNVerts(n);
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			if (!input.ReadDouble(coord[j]))
+				;//input.Error("Syntax error in face command.  Too few coordinates for Vertex #%d.", nFaces + 1); //HACK
+		v = AddVertex(coord);
+		faces.back().vertices[i] = v;
+		v->AppendFace(&faces.back());
+	}
+}
+
+void mesh::ReadNew(Loader& input)
+{
+	char token[MAX_INPUT_LENGTH];
+
+	int nVerts;
+	int nFaces;
+
+	input.ReadToken(token);
+	if (strncmp(token, "vertices", 4) != 0)
+		input.Error(token, "An indexed mesh must begin with a Vertices command");
+
+	if (!input.ReadInt(nVerts))
+		input.Error("Vertices command must be followed by a vertex count");
+
+	vertices.clear();
+	vertices.resize(nVerts);
+
+	input.ReadToken(token);
+	if (strncmp(token, "vert", 4) != 0)
+		input.Error("A vertex must begin with a 'vert' command");
+
+	for (int i = 0; i < nVerts; i++)
+	{
+		vertices[i].position = point(0, 0, 0);
+		vertices[i].uv = svector(9.9999e25, 0, 0);
+		vertices[i].ClearFaceList();
+
+		do
+		{
+			input.ReadToken(token);
+			if (strncmp(token, "coord", 5) == 0)
+			{
+				int j;
+				for (j = 0; j < 3; j++)
+					if (!input.ReadDouble(vertices[i].position[j]))
+						input.Error("Incomplete coordinate data for vertex %d, must have at least 3", i);
+
+				if (!input.ReadDouble(vertices[i].position[3]))
+					vertices[i].position[j] = 1.0;
+			}
+			else if (strncmp(token, "uv", 3) == 0)
+			{
+				vertices[i].uv = svector(0, 0, 0);
+				for (int j = 0; j < 2; j++)
+					if (!input.ReadDouble(vertices[i].uv[j]))
+						input.Error("Incomplete uv data for vertex %d, must have 2", i);
+			}
+			else if (strncmp(token, "norm", 4) == 0)
+			{
+				vertices[i].normal = svector(0, 0, 0);
+				for (int j = 0; j < 3; j++)
+					if (!input.ReadDouble(vertices[i].normal[j]))
+						input.Error("Incomplete normal data for vertex %d, must have 3", i);
+				normalsSpecifiedInFile = true;
+			}
+			else if (strncmp(token, "endvertices", 6) == 0)
+			{
+				if (i != nVerts - 1);
+					//complain("Vertex list ended before %d vertices were found", nVerts);
+				else
+					break; // Continue to process the faces
+			}
+			else if (strncmp(token, "vert", 4) != 0)
+				input.Error(token, "Unknown Vertex Command Encountered: %s", token);
+		} while (strncmp(token, "vert", 4) != 0);  // If you hit a vert command, go on to next vertex
+
+		if (vertices[i].uv[0] == 9.9999e25)
+			vertices[i].uv = vertices[i].position - point::origin;
+	}
+
+	input.ReadToken(token);
+	if (strncmp(token, "faces", 5) != 0)
+		input.Error(token, "Vertex list must be followed by face list");
+
+	if (!input.ReadInt(nFaces))
+		input.Error("Faces command must be followed by a face count");
+
+	faces.clear();
+	faces.resize(nFaces);
+
+	if (!input.ReadToken(token))
+		input.Error("A face must begin with a 'face' command");
+
+	for (int i = 0; i < nFaces; i++)
+	{
+		int vertCount;
+		if (!input.ReadInt(vertCount))
+			input.Error("face command must be followed by a vertex count");
+
+		faces[i].SetNVerts(vertCount);
+		do
+		{
+			input.ReadToken(token);
+			if (strncmp(token, "index", 5) == 0)
+			{
+				for (int j = 0; j < vertCount; j++)
+				{
+					int vertIndex;
+					if (!input.ReadInt(vertIndex))
+						input.Error("Incomplete vertex data for face %d, must have %d", i, vertCount);
+					else if (vertIndex >= nVerts)
+						input.Error("Badly formatted data: vertex index %d in mesh %s\n", vertIndex, objectName);
+					faces[i].vertices[j] = &vertices[vertIndex];
+				}
+			}
+			else if (strncmp(token, "face", 4) == 0)
+			{
+				continue;
+			}
+			else if (strncmp(token, "endfaces", 4) == 0)
+			{
+				if (i != nFaces - 1)
+					input.Error(token, "End reached before %d faces were found", nFaces);
+				else
+					break; // Continue to process the faces
+			}
+		} while (strncmp(token, "face", 4) != 0);  // If hit a new face command, then continue on to next face
+		faces[i].RecalculateNormal();
+		if (faces[i].normal.length() > TD_SMALL)
+		{
+			for (int k = 0; k < faces[i].vertices.size(); k++)
+				faces[i].vertices[k]->AppendFace(&faces[i]);
+		}
+	}
+}
+
+void mesh::Write(std::ostream& output)
+{
+	output << "\tVertices " << vertices.size() << '\n';
+	for (const auto& vertex : vertices)
+		output << "\t\tvert\tcoord\t" << vertex.position << '\n';
+	output << "\tEndVertices\n";
+	output << "\tFaces " << faces.size() << '\n';
+	for (const auto& face : faces)
+	{
+		output << "\t\tface " << face.vertices.size() << "\tindex\t";
+		for (const auto&  vert : face.vertices)
+		{
+			// This can be improved.  All we need to do is to subtract pointers to
+			// get the index!
+			for (int k = 0; k < vertices.size(); k++)
+			{
+				if (&vertices[k] == vert)
+					output << k << " ";
+			}
+		}
+		output << '\n';
+	}
+	output << "\tEndFaces\n";
+	output << "End" << '\n';
+	output.flush();
+}
+

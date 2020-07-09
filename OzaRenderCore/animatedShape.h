@@ -2,6 +2,8 @@
 #include "shape.h"
 #include "Interpolator.h"
 #include "QuaternionInterplotator.h"
+#include "matrixRotationInterp.h"
+
 class animatedShape : public shape
 {
 public:
@@ -37,7 +39,7 @@ private:
 	Interpolator* iScale;
 	Interpolator* iRotation;  // Interpolator for Euler Angle Rotation
 	QuaternionInterplotator* iRotationQ;  // Interpolator for Quateran Rotation
-	//matrixRotationInterp* iMatrix;
+	matrixRotationInterp* iMatrix;
 
 	double time;
 };

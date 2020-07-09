@@ -1,4 +1,6 @@
 #include "sphere.h"
+#include "Misc.h"
+
 sphere::~sphere()
 {
 	//glDeleteLists(glListNumber, 1);

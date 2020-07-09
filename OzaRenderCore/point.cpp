@@ -1,6 +1,7 @@
 #include "point.h"
-
 using namespace std;
+point point::origin;
+
 point::point() : point(0, 0, 0)
 {
 }

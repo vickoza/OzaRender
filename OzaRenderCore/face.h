@@ -5,15 +5,14 @@ class face
 public:
 
 	face(int n = 3);
-	~face() { delete[] vertices; delete[] normals; }
+	~face() { }
 
 	void SetNVerts(int n);
 	void RecalculateNormal(void);
 	void RecalculateVertexNormals(double toleranceAngle = 90);
 
-	int nVerts;
-	vert** vertices;
-	svector* normals;
+	std::vector<vert*> vertices;
+	std::vector<svector> normals;
 	svector normal;
 };
 
