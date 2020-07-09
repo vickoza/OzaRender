@@ -28,6 +28,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)matrixRotationInterp.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)mesh.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Misc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)multipleDimArray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)point.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)quaternion.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)QuaternionInterplotator.h" />

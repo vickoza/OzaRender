@@ -148,6 +148,16 @@ BOOL COzaRenderApp::InitInstance()
 	// The one and only window has been initialized, so show and update it
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+	CMFCRibbonBar* pRibbon = ((CMDIFrameWndEx*)m_pMainWnd)->GetRibbonBar();
+	ASSERT_VALID(pRibbon);
+	loadVulkan();
+	auto pVulkan = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_VULKAN));
+	auto pDirectX = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_DIRECTX));
+	auto pOpenGL = DYNAMIC_DOWNCAST(MyRibbonCheckBox, pRibbon->FindByID(ID_OPENGL));
+	pVulkan->SetCheck(true);
+	pDirectX->SetCheck(false);
+	pOpenGL->SetCheck(false);
+	currentRenderPackage = RenderPackage::Vulkan;
 	return TRUE;
 }
 
